@@ -1,0 +1,19 @@
+{
+  "name": "type-racer",
+  "version": "1.0.0",
+  "description": "Just some type racer game.",
+  "main": "server.js",
+  "scripts": {
+    "test": "nodemon --ext js --watch ./ --exec 'mocha ./tests/*.test.js' --delay 1"
+  },
+  "author": "Isur",
+  "license": "ISC",
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "chai": "^4.1.2",
+    "chai-http": "^4.0.0",
+    "express": "^4.16.3",
+    "mocha": "^5.2.0",
+    "nodemon": "^1.18.3"
+  }
+}
