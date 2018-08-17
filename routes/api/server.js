@@ -47,7 +47,7 @@ router.post('/result', (req,res) => {
 
 router.get('/top10', (req,res) => {
     Score.find()
-        .sort({score: 1})
+        .sort({score: -1})
         .limit(10)
         .then(scores => {
             res.json(scores);

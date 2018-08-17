@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const app = express();
 const fillDatabase = require('./config/db');
 const cors = require('cors');
-app.use(cors);
+app.use(cors());
 app.use(bodyParser.json());
 
 // SERVER
@@ -12,16 +12,16 @@ app.use(bodyParser.json());
 const db = require('./config/keys').mongoURL;
 
 mongoose.connect(db, { useNewUrlParser: true })
-  .then(() => console.log("MongoDB Connected ", db))
+.then(() => console.log("MongoDB Connected ", db))
   .then(() => {
-        if(process.env.NODE_ENV === 'test')
+    if(process.env.NODE_ENV === 'test')
             fillDatabase(400);
-        else
+            else
             fillDatabase(10000);
     })
-  .catch(err => console.log(err));
+    .catch(err => console.log(err));
 
-// routes
+    // routes
 const api = require('./routes/api/server').router;
 
 app.use('/server', api);
