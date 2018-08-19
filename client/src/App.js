@@ -10,32 +10,32 @@ import ScoreTable from './Components/ScoreTable';
 
 import API from './config/api_calls';
 
-const mockedWords = ['test', 'dziala', 'super'];
-const mockedFirstWord = 'PIERWSZY';
-
 class App extends Component {
   constructor() {
     super();
     this.state = {
-      words: mockedWords,
-      firstWord: mockedFirstWord,
+      words: '',
+      firstWord: '',
       inputValue: "",
-      time: 60,
+      time: 5,
       good: true,
       point: 0,
       start: false,
       loadedWords: false,
-      loadedScores: false
+      loadedScores: false,
+      scores: []
     }
   }
 
   componentDidMount() {
     API.getWords().then(words => this.setWords(words));
-    API.getScores().then(scores => this.setState({ scores, loadedScores: true }));
+    API.getScores().then(scores => {
+      console.log(scores);
+      this.setState({ scores, loadedScores: true })
+    });
   }
 
   setWords = (words) => {
-    console.log(words);
     this.setState({ firstWord: words[0] })
     words.shift();
     this.setState({ words, loadedWords: true});
@@ -58,7 +58,7 @@ class App extends Component {
 
   checkWords = (words) => {
     if (words.length === 0) {
-      this.getWords().then(words => {
+      API.getWords().then(words => {
         this.setState({ words: words });
       }).catch(err => console.log(err));
     }
@@ -84,7 +84,7 @@ class App extends Component {
   fragmentOfWord = (fragment, word) => {
     if (word.startsWith(fragment))
       return true;
-    else 
+    else
       return false;
   }
 
@@ -95,12 +95,13 @@ class App extends Component {
       return false;
   }
 
-  
+
 
   endOfTime = () => {
     this.setState({ start: false, loadedScores:false })
     let name = prompt('enter your name');
-    this.postResult(name).then(() => this.getScores().then(scores => this.setState({ scores, loadedScores: true })));
+    API.postResult(name, this.state.point)
+      .then(() => API.getScores().then(scores => this.setState({ scores, loadedScores: true })));
   }
 
   render() {

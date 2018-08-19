@@ -6,7 +6,8 @@ import { shallow } from 'enzyme';
 import moxios from 'moxios';
 import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
-
+import sinon from 'sinon'
+import urls from '../config/url';
 configure({ adapter: new Adapter() });
 let wrapper;
 
@@ -16,6 +17,8 @@ describe('App', () => {
   var wordThree = 'abc';
   var fragOne = 'te';
   var fragTwo = 'ts';
+  var words = ['test', 'second', 'car'];
+  var words2 = ['tester', 'third', 'bike'];
   beforeEach(() => {
     moxios.install();
     wrapper = shallow(<App />);
@@ -23,7 +26,7 @@ describe('App', () => {
 afterEach(() => {
   moxios.uninstall();
 })
-  
+
   it('should work', () => {
    expect(wrapper).to.exist;
   });
@@ -43,6 +46,12 @@ afterEach(() => {
     expect(wrapper.instance().validateWord(fragTwo,wordTwo)).to.be.equal(false);
     expect(wrapper.instance().validateWord(wordOne, wordTwo)).to.be.equal(true);
     expect(wrapper.instance().validateWord(wordOne, wordThree)).to.be.equal(false);
+  });
+
+  it('should change states of words', () => {
+    wrapper.instance().setWords(words);
+    expect(wrapper.state().firstWord).to.be.equal('test');
+    expect(wrapper.state().words).to.deep.equal(['second', 'car']);
   });
 
 })
