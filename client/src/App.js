@@ -17,7 +17,7 @@ class App extends Component {
       words: '',
       firstWord: '',
       inputValue: "",
-      time: 5,
+      time: 60,
       good: true,
       point: 0,
       start: false,

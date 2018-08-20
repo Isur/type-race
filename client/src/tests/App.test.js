@@ -8,6 +8,7 @@ import { configure } from 'enzyme';
 import Adapter from 'enzyme-adapter-react-16';
 import sinon from 'sinon'
 import urls from '../config/url';
+import API from '../config/api_calls';
 configure({ adapter: new Adapter() });
 let wrapper;
 
@@ -18,7 +19,6 @@ describe('App', () => {
   var fragOne = 'te';
   var fragTwo = 'ts';
   var words = ['test', 'second', 'car'];
-  var words2 = ['tester', 'third', 'bike'];
   beforeEach(() => {
     moxios.install();
     wrapper = shallow(<App />);
@@ -52,6 +52,26 @@ afterEach(() => {
     wrapper.instance().setWords(words);
     expect(wrapper.state().firstWord).to.be.equal('test');
     expect(wrapper.state().words).to.deep.equal(['second', 'car']);
+  });
+
+  it('should test endOfTime', (done) => {
+    let spy = sinon.spy(API, 'postResult');
+    let spy2 = sinon.spy(API, 'getScores');
+    wrapper.instance().endOfTime();
+    expect(wrapper.state().start).to.be.equal(false);
+    expect(wrapper.state().loadedScores).to.be.equal(false);
+    expect(spy.calledOnce).to.be.true;
+    moxios.wait(() => {
+      let request = moxios.requests.mostRecent();
+      request.respondWith({}).then(() =>{
+        expect(spy2.calledOnce).to.be.true;
+        request = moxios.requests.mostRecent();
+        request.respondWith({}).then(() => {
+          expect(wrapper.state().loadedScores).to.be.equal(true);
+          done();
+        })
+      })
+    })
   });
 
 })
