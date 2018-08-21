@@ -9,6 +9,7 @@ import Adapter from 'enzyme-adapter-react-16';
 import sinon from 'sinon'
 import urls from '../config/url';
 import API from '../config/api_calls';
+import { appendFileSync } from 'fs';
 configure({ adapter: new Adapter() });
 let wrapper;
 
@@ -22,13 +23,13 @@ describe('App', () => {
   beforeEach(() => {
     moxios.install();
     wrapper = shallow(<App />);
-});
-afterEach(() => {
-  moxios.uninstall();
-})
+  });
+  afterEach(() => {
+    moxios.uninstall();
+  })
 
   it('should work', () => {
-   expect(wrapper).to.exist;
+    expect(wrapper).to.exist;
   });
 
   it('should check if words are equal', () => {
@@ -37,13 +38,13 @@ afterEach(() => {
   });
 
   it('should check if word is fragment of another', () => {
-    expect(wrapper.instance().fragmentOfWord(fragOne,wordOne)).to.be.equal(true);
-    expect(wrapper.instance().fragmentOfWord(fragTwo,wordTwo)).to.be.equal(false);
+    expect(wrapper.instance().fragmentOfWord(fragOne, wordOne)).to.be.equal(true);
+    expect(wrapper.instance().fragmentOfWord(fragTwo, wordTwo)).to.be.equal(false);
   });
 
   it('should validate word', () => {
-    expect(wrapper.instance().validateWord(fragOne,wordOne)).to.be.equal(true);
-    expect(wrapper.instance().validateWord(fragTwo,wordTwo)).to.be.equal(false);
+    expect(wrapper.instance().validateWord(fragOne, wordOne)).to.be.equal(true);
+    expect(wrapper.instance().validateWord(fragTwo, wordTwo)).to.be.equal(false);
     expect(wrapper.instance().validateWord(wordOne, wordTwo)).to.be.equal(true);
     expect(wrapper.instance().validateWord(wordOne, wordThree)).to.be.equal(false);
   });
@@ -54,24 +55,22 @@ afterEach(() => {
     expect(wrapper.state().words).to.deep.equal(['second', 'car']);
   });
 
-  it('should test endOfTime', (done) => {
-    let spy = sinon.spy(API, 'postResult');
-    let spy2 = sinon.spy(API, 'getScores');
+  it('should test endOfTime', () => {
     wrapper.instance().endOfTime();
     expect(wrapper.state().start).to.be.equal(false);
     expect(wrapper.state().loadedScores).to.be.equal(false);
-    expect(spy.calledOnce).to.be.true;
+    expect(wrapper.state().gameFinish).to.be.equal(true);
+  });
+  it('should test back', (done) => {
+    let spy = sinon.spy(API, 'getScores');
+    wrapper.instance().back();
     moxios.wait(() => {
       let request = moxios.requests.mostRecent();
-      request.respondWith({}).then(() =>{
-        expect(spy2.calledOnce).to.be.true;
-        request = moxios.requests.mostRecent();
-        request.respondWith({}).then(() => {
-          expect(wrapper.state().loadedScores).to.be.equal(true);
-          done();
-        })
+      request.respondWith({}).then(() => {
+        expect(spy.calledOnce).to.be.true;
+        done();
       })
     })
-  });
+  })
 
 })

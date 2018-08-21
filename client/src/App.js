@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import logo from './logo.svg';
 import './App.css';
 
-
 import Words from './Components/Words';
 import Input from './Components/Input';
 import Time from './Components/Time';
 import ScoreTable from './Components/ScoreTable';
+import SubmitScore from './Components/SubmitScore';
 
 import API from './config/api_calls';
 
@@ -23,7 +23,8 @@ class App extends Component {
       start: false,
       loadedWords: false,
       loadedScores: false,
-      scores: []
+      scores: [],
+      gameFinish: false
     }
   }
 
@@ -38,7 +39,7 @@ class App extends Component {
   setWords = (words) => {
     this.setState({ firstWord: words[0] })
     words.shift();
-    this.setState({ words, loadedWords: true});
+    this.setState({ words, loadedWords: true });
   }
 
 
@@ -74,7 +75,7 @@ class App extends Component {
   }
 
   fullWord = (wordOne, wordTwo) => {
-    if(wordOne === wordTwo){
+    if (wordOne === wordTwo) {
       return true;
     } else {
       return false;
@@ -88,7 +89,7 @@ class App extends Component {
       return false;
   }
 
-  validateWord = (frag,word) => {
+  validateWord = (frag, word) => {
     if (this.fullWord(frag, word) || this.fragmentOfWord(frag, word))
       return true;
     else
@@ -98,10 +99,11 @@ class App extends Component {
 
 
   endOfTime = () => {
-    this.setState({ start: false, loadedScores:false })
-    let name = prompt('enter your name');
-    API.postResult(name, this.state.point)
-      .then(() => API.getScores().then(scores => this.setState({ scores, loadedScores: true })));
+    this.setState({ start: false, loadedScores: false, gameFinish: true });
+  }
+
+  back = () => {
+    API.getScores().then(scores => this.setState({ scores, gameFinish: false, loadedScores: true, inputValue: '' }));
   }
 
   render() {
@@ -113,9 +115,10 @@ class App extends Component {
           <h4> Type as fast as you can!</h4>
         </header>
         {this.state.loadedWords && <Words words={this.state.words} firstWord={this.state.firstWord} good={this.state.good} />}
-        <Input value={this.state.inputValue} change={this.inputChange} keyPress={this.handleKeyPress} />
+        {!this.state.gameFinish && <Input value={this.state.inputValue} change={this.inputChange} keyPress={this.handleKeyPress} />}
         {this.state.start && <Time time={this.state.time} points={this.state.point} value={this.state.time} end={this.endOfTime} />}
-        {this.state.loadedScores &&  <ScoreTable scores={this.state.scores} />}
+        {this.state.loadedScores && <ScoreTable scores={this.state.scores} />}
+        {this.state.gameFinish && <SubmitScore back={this.back} score={this.state.point} />}
       </div>
     );
   }
