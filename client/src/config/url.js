@@ -1,4 +1,4 @@
-const server = 'http://localhost:5000/'
+const server = ''
 module.exports = {
     getWords: server + 'server/getWords',
     result: server + 'server/result',
