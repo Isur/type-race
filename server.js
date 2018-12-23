@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 const app = express();
 const fillDatabase = require('./config/db');
 const cors = require('cors');
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', 'http://localhost:5000');
+  res.setHeader('Access-Control-Allow-Headers', 'Content-type,Authorization');
+  next();
+});
 app.use(cors());
 app.use(bodyParser.json());
 
