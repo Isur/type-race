@@ -24,6 +24,5 @@
     "enzyme-adapter-react-16": "^1.2.0",
     "react-addons-test-utils": "^15.6.2",
     "sinon": "^6.1.5"
-  },
-"proxy": "http://localhost:5000/"
+  }
 }
