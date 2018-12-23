@@ -1,5 +1,5 @@
 module.exports = {
-    getWords: 'server/getWords',
-    result: 'server/result',
-    scores: 'server/top10'
+    getWords: '/getWords',
+    result: '/result',
+    scores: '/top10'
 };
