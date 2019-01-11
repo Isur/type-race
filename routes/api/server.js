@@ -57,5 +57,10 @@ router.get('/top10', (req,res) => {
 
 router.delete('/deleteAllWords',(req,res) => {
     Word.remove({}, () => res.json({success: true}));
-})
+});
+
+router.delete('/deleteScores',(req,res) => {
+    Score.remove({}, () => res.json({success: true}));
+});
+
 module.exports = {router, getQuantityOfWords, getRandomWord};
